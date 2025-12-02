@@ -15,12 +15,15 @@ int detection[1001];//detection[i]记录小黄鸭第i次移动的碰撞检测（
 char instruction0[1000]="控制方法：按 W 向上移动，按 S 向下移动，按<Enter>选择。";
 char instruction2[1000]="控制方法：按 W 向上移动，按 S 向下移动，按 A 向左移动，按 D 向右移动，按 Z 撤回，按 Q 结束冒险";
 char seqal[3001]="\0";//seqal存储所有行动，从0开始
-void color(int x){
+void color(int x)
+{
     SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), x);
 }
-void process(){
+void process()
+{
     for(int i=0;i<x;i++)
-        for(int j=0;j<y;j++){
+        for(int j=0;j<y;j++)
+        {
             if(map2[i][j]=='Z')
                 map[i][j]=(step%2==0)?'Z':' ';
             if(map2[i][j]=='z')
@@ -28,11 +31,15 @@ void process(){
         }
     map[posx][posy]='Y';
 }
-void outputmap(char map[N][N]){
+void outputmap(char map[N][N])
+{
     process();
-    for(int i=0;i<x;i++){
-        for(int j=0;j<y;j++){
-            switch(map[i][j]){
+    for(int i=0;i<x;i++)
+    {
+        for(int j=0;j<y;j++)
+        {
+            switch(map[i][j])
+            {
                 case 'Y':color(6);printf("Y ");break;
                 case 'D':color(4);printf("D ");break;
                 case 'Z':color(13);printf("Z ");break;
@@ -44,13 +51,15 @@ void outputmap(char map[N][N]){
     }
     color(7);
 }//outputmap函数可以输出整个地图
-void detect(){//负责碰撞检测
+void detect()
+{//负责碰撞检测
     if(map[posx][posy]==' '||map[posx][posy]=='D')
         detection[step]=0;
     if(map[posx][posy]=='T'){
         detection[step]=1;treasure_acquired++;}
 }
-void changecur(){
+void changecur()
+{
     if(map2[posx][posy]=='T'||map2[posx][posy]=='Y'||map2[posx][posy]==' ')//如果原位置为宝箱或空格，或者为小黄初始位置
         map[posx][posy]=' ';
     if(map2[posx][posy]=='Z')//如果原位置为前间隔陷阱
@@ -60,8 +69,10 @@ void changecur(){
     if(map2[posx][posy]=='D')//如果原位置为陷阱
         map[posx][posy]='D';
 }
-void changecur_withdraw(){
-    if(map2[posx][posy]=='T'&& detection[step]==1){
+void changecur_withdraw()
+{
+    if(map2[posx][posy]=='T'&& detection[step]==1)
+    {
         map[posx][posy]='T';
         treasure_acquired--;
     }
@@ -72,8 +83,10 @@ void changecur_withdraw(){
     if(map2[posx][posy]==' '||map2[posx][posy]=='Y')
         map[posx][posy]=' ';
 }
-int move_detect(int a){//a为移动类型：0为左，1为下，2为右，3为上
-    switch(a){
+int move_detect(int a)
+{//a为移动类型：0为左，1为下，2为右，3为上
+    switch(a)
+    {
         case 0:return (map[posx][posy-1]!='W' && posy-1>=0);
         case 1:return (map[posx+1][posy]!='W' && posx<=x-2);
         case 2:return (map[posx][posy+1]!='W' && posy<=y-2);
@@ -81,18 +94,22 @@ int move_detect(int a){//a为移动类型：0为左，1为下，2为右，3为�
         default: return 0;
     }
 }
-void move(int type){//type代表移动类型：0左1下2右3上
+void move(int type)
+{//type代表移动类型：0左1下2右3上
     step++;
     vig[step]=vig[step-1]+1;
-    if(move_detect(type)){
+    if(move_detect(type))
+    {
         changecur();
         if(map[posx][posy]=='D')
             vig[step]++;
-        if(map2[posx][posy]=='z'||map2[posx][posy]=='Z'){
+        if(map2[posx][posy]=='z'||map2[posx][posy]=='Z')
+        {
             if(map[posx][posy]==' ')
                 vig[step]++;
         }
-        switch(type){
+        switch(type)
+        {
             case 0: posy--;break;
             case 1: posx++;break;
             case 2: posy++;break;
@@ -106,7 +123,8 @@ void move(int type){//type代表移动类型：0左1下2右3上
 void withdraw(){//令要撤销的步为A步
     system("cls");
     changecur_withdraw();
-    switch(seqal[step-1]){
+    switch(seqal[step-1])
+    {
         case 'w': posx++;break;
         case 's': posx--;break;
         case 'a': posy++;break;
@@ -122,7 +140,8 @@ void withdraw(){//令要撤销的步为A步
 void state0(){
     char c;
     int t=1;//t代表在那个选项：1,2,3为关数，0为退出
-    do{
+    do
+    {
         system("cls");
         printf("小黄的奇妙冒险！\n\n");
         printf("%c开始第一关\n",(t==1)?'>':' ');
@@ -144,18 +163,21 @@ void state0(){
     }while(c!='\r');
     map_select=t;
 }
-void state1(){//控制选择模式界面的函数
+void state1()
+{//控制选择模式界面的函数
     system("cls");
     printf("请选择控制模式：\n");
     printf(">0：实时模式\n");
     printf(" 1：编程模式\n\n");
     printf("%s",instruction0);
     char c;
-    do{
+    do
+    {
         c=getch();
         if(c=='\r')
             state=2;
-        if(c=='w'){
+        if(c=='w')
+        {
             mode=0;
             system("cls");
             printf("请选择控制模式：\n");
@@ -163,7 +185,8 @@ void state1(){//控制选择模式界面的函数
             printf(" 1：编程模式\n\n");
             printf("%s",instruction0);
         }
-        if(c=='s'){
+        if(c=='s')
+        {
             mode=1;
             system("cls");
             printf("请选择控制模式：\n");
@@ -174,20 +197,25 @@ void state1(){//控制选择模式界面的函数
             
     }while(c!='\r');
 }
-void state2_mode0(){//控制实时模式下游戏界面的函数
+void state2_mode0()
+{//控制实时模式下游戏界面的函数
     char c;
     system("cls");
     outputmap(map);
     printf("体力消耗：%d\n",vig[0]);
     printf("%s",instruction2);
-    do{
+    do
+    {
         c=getch();
-        if(c=='d'||c=='a'||c=='w'||c=='s'||c=='z'){    
-            if(c!='z'){
+        if(c=='d'||c=='a'||c=='w'||c=='s'||c=='z')
+        {    
+            if(c!='z')
+            {
                 seqal[strlen(seqal)]=c;
                 seqal[strlen(seqal)]='\0';
             }
-            switch(c){
+            switch(c)
+            {
                 case 'a':move(0);break;
                 case 'w':move(3);break;
                 case 's':move(1);break;
@@ -197,7 +225,8 @@ void state2_mode0(){//控制实时模式下游戏界面的函数
                         break;
                 default:break;
             }
-            if(c=='z'){
+            if(c=='z')
+            {
                 seqal[step]='\0';
                 vig[step+1]=0;
             }   
@@ -212,22 +241,28 @@ void state2_mode0(){//控制实时模式下游戏界面的函数
         }
     }while(c!='q'&&treasure_acquired<treasure_target);
 }
-void state2_mode1(){//控制编程模式下的游戏界面
+void state2_mode1()
+{//控制编程模式下的游戏界面
     //编程模式输入
     char c;
-    while(treasure_acquired<treasure_target){
+    while(treasure_acquired<treasure_target)
+    {
         system("cls");
         outputmap(map);
         printf("体力消耗：%d\n",vig[step]);
         printf("行动路径：");
-        do{
+        do
+        {
             c=getch();
-            if(c=='d'||c=='a'||c=='w'||c=='s'||c=='z'||c=='\b'){
-                if(c=='d'||c=='a'||c=='w'||c=='s'){//正常移动
+            if(c=='d'||c=='a'||c=='w'||c=='s'||c=='z'||c=='\b')
+            {
+                if(c=='d'||c=='a'||c=='w'||c=='s')
+                {//正常移动
                     seq[strlen(seq)]=c;
                     seq[strlen(seq)]='\0';
                 }
-                if(c=='z'||c=='\b'){
+                if(c=='z'||c=='\b')
+                {
                     if(strlen(seq)>0)
                         seq[strlen(seq)-1]='\0';
                 }
@@ -237,14 +272,18 @@ void state2_mode1(){//控制编程模式下的游戏界面
                 printf("行动路径：");
                 printf("%s",seq);
             }
-            if(c=='q'){
+            if(c=='q')
+            {
                 state=3;
                 break;//如果按q，则直接结束输入
             }
         }while(c!='\r');
-        if(state!=3){//如果是按q结束输入，那么直接跳过此部分进入结算界面
-            for(int i=0;i<strlen(seq);i++){
-                switch(seq[i]){
+        if(state!=3)
+        {//如果是按q结束输入，那么直接跳过此部分进入结算界面
+            for(int i=0;i<strlen(seq);i++)
+            {
+                switch(seq[i])
+                {
                     case 'a':move(0);break;
                     case 'w':move(3);break;
                     case 's':move(1);break;
@@ -263,7 +302,8 @@ void state2_mode1(){//控制编程模式下的游戏界面
         }
     }
 }
-void state3(){
+void state3()
+{
     system("cls");
     if(treasure_acquired==treasure_target)
         printf("恭喜你，小黄找到了所有宝藏！\n\n");
@@ -277,7 +317,8 @@ void state3(){
     getch();
     exit(0);   
 }
-int main(){
+int main()
+{
     vig[0]=0;
     char c;
     SetConsoleOutputCP(65001);//将编码方式转变为UTF-8，以支持中文输出
@@ -285,15 +326,18 @@ int main(){
     state0();
     state1();
     system("cls");
-    switch(map_select){
+    switch(map_select)
+    {
         case 1:freopen("map1.txt","r",stdin);break;
         case 2:freopen("map2.txt","r",stdin);break;
         case 3:freopen("map3.txt","r",stdin);break;
         default: break;
     }
     scanf("%d%d\n",&x,&y);
-    for(int i=0;i<x;i++){
-        for(int j=0;j<y;j++){
+    for(int i=0;i<x;i++)
+    {
+        for(int j=0;j<y;j++)
+        {
             char c;
             c=getchar();
             map[i][j]=c;
@@ -305,10 +349,12 @@ int main(){
     }
     fclose(stdin);
     for(int i=0;i<x;i++)
-        for(int j=0;j<y;j++){
+        for(int j=0;j<y;j++)
+        {
             if(map[i][j]=='T')
                 treasure_target++;
-            if(map[i][j]=='Y'){
+            if(map[i][j]=='Y')
+            {
                 posx=i;
                 posy=j;
             }
