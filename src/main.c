@@ -3,6 +3,8 @@
 #include<stdlib.h>
 #include<string.h>
 #include <windows.h>
+#include <sys/stat.h>
+#include <time.h>
 #include<unistd.h>
 #define N 101 //N即为地图最大大小
 char seq[100001],map[N][N],map2[N][N];                     //seq存储从开始到结束所有的操作,最多支持100002步（不包括撤回和退出）,map存储整个地图,最多支持N*N地图;map2是初始地图，不受改变
@@ -320,8 +322,18 @@ void mapselection(){//控制选关界面的函数
         saveselection();
 }
 void saveselection(){//控制是否加载存档的函数
+    FILE* fp=fopen("save.map","r");
+    const char* str="save.map";
+    struct stat fileStat;
+    if(stat(str,&fileStat)<0)
+        return ;
+    struct tm* timeinfo;
+    timeinfo=localtime(&fileStat.st_mtime);
+    char timebuf[80];
+    strftime(timebuf, sizeof(timebuf), "%Y-%m-%d %H:%M:%S", timeinfo);
     system("cls");
     printf("检测到存档，是否加载存档？\n");
+    printf("上次游玩时间：%s\n",timebuf);
     printf(">是\n");
     printf(" 否\n\n");
     printf("%s",instruction0);
